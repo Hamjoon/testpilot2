@@ -121,6 +121,12 @@ export class ChatModel implements ICompletionModel {
     const completions = new Set<string>();
     for (const choice of json.choices) {
       const content = choice.message.content;
+      if (content === null) {
+        // a null completion crashes completeTest; take the empty-completion path instead
+        console.log(`Null completion (finish_reason=${choice.finish_reason})`);
+        completions.add("");
+        continue;
+      }
       completions.add(content);
     }
     return completions;
